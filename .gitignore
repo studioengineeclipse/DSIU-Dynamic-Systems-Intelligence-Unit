@@ -1,6 +1,9 @@
 # Build output
 dist/
 
+# OIL runtime state (feedback memory)
+dsiu_state/
+
 # Python
 __pycache__/
 *.pyc

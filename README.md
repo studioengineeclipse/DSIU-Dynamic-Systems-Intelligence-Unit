@@ -16,6 +16,7 @@ Claude Code skill** plus a small standard-library engine.
 | Path | What it is |
 |---|---|
 | `dsiu/` | The skill bundle (source of truth): `SKILL.md`, doctrine in `references/`, `templates/`, and the `scripts/dsiu_analyze.py` engine. |
+| `dsiu_runtime/` | **DSIU-OIL** — the Operating Intelligence Layer that turns the discrete engine modes into one operating loop. See [`dsiu_runtime/README.md`](dsiu_runtime/README.md). |
 | `scripts/build_skill.py` | Validates the bundle and packages it into `dist/dsiu.skill`. |
 | `tests/` | Stdlib `unittest` smoke tests (no third-party deps). |
 | `examples/dsiu_on_dsiu_field.md` | DSIU's lens turned on its own v1 bundle — a worked Field Template and the rationale for this hardening pass. |
@@ -38,6 +39,27 @@ Claude Code skill** plus a small standard-library engine.
 Plus the keystone the framework was missing: **`diff` mode**, DSIU's own feedback
 loop — compare two passes and get a movement score, so "DSIU building DSIU"
 becomes measurable instead of metaphorical.
+
+## DSIU-OIL — the Operating Intelligence Layer (v0.1)
+
+The discrete modes above are a toolset. **DSIU-OIL** (`dsiu_runtime/`) is the layer
+that turns them into one operating loop:
+
+> Observe → Map → Score → Packetize → Supervise → Diff → Feedback → Repeat
+
+```bash
+# Run one operating-loop pass over a target (Markdown supervisor report)
+python -m dsiu_runtime loop --path ./repo --name "My Repo" --include-docs
+
+# Full artifact bundle (JSON) + report (Markdown); re-run to measure movement
+python -m dsiu_runtime loop --path ./repo --name "My Repo" --json report.json --md report.md
+```
+
+One pass emits a scorecard, a process graph, a CPK packet, an optional diff, a
+policy verdict, and a supervisor report — every artifact `DRAFT`, movement measured
+but improvement never claimed, execution dry-run only. This is the brain a future
+DSIU shell/OS gets built around; it is **not** itself a kernel, daemon, or OS. Full
+details and the phase roadmap: [`dsiu_runtime/README.md`](dsiu_runtime/README.md).
 
 ## Usage
 
