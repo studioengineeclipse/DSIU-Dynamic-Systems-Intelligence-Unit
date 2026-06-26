@@ -1,0 +1,12 @@
+# Build output
+dist/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+
+# Scratch
+*.dsiu.md
+*.scorecard.json
