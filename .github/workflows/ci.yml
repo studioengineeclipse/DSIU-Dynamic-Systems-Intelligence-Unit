@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run tests (stdlib unittest, no deps)
+        run: python -m unittest discover -s tests -v
+
+      - name: Build the .skill bundle
+        run: python scripts/build_skill.py
+
+      - name: Upload the built skill
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsiu-skill
+          path: dist/dsiu.skill
