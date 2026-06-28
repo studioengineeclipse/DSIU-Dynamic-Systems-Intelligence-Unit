@@ -21,12 +21,20 @@ from .supervisor import build_supervisor_report
 def run_loop(path: str, name: "str | None" = None,
              state_dir: str = "dsiu_state",
              include_docs: bool = False,
-             execute: bool = False) -> dict:
+             execute: bool = False,
+             uef_path: "str | None" = None) -> dict:
     """Run one operating-loop pass and return all artifacts."""
     root = os.path.abspath(path)
     if not os.path.isdir(root):
         raise NotADirectoryError(root)
     name = name or os.path.basename(root.rstrip(os.sep)) or "system"
+
+    # Optional DSIU-UEF compatibility profile (reserved integration point).
+    # Lazy-imported so OIL stays standalone if the fabric is ever absent.
+    uef_profile = None
+    if uef_path:
+        from dsiu_uef.profile import build_profile
+        uef_profile = build_profile(uef_path)
 
     # 1. Observe / Map — include_docs so config/knowledge surfaces aren't invisible.
     items = list(walk_repo(root, include_docs=include_docs))
@@ -51,6 +59,7 @@ def run_loop(path: str, name: "str | None" = None,
     # 7. Supervise -> Law-0 policy gate over every emitted artifact
     draft_violations = enforce_draft(
         scorecard=scorecard, graph=graph, packet=packet, diff=diff,
+        uef_profile=uef_profile,
     )
     policy_verdict = build_policy_verdict(diff, draft_violations)
 
@@ -69,6 +78,7 @@ def run_loop(path: str, name: "str | None" = None,
     report = build_supervisor_report(
         target=root, scorecard=scorecard, graph=graph, packet=packet,
         diff=diff, policy_verdict=policy_verdict, execute_record=execute_record,
+        uef_profile=uef_profile,
     )
 
     return {
@@ -78,5 +88,6 @@ def run_loop(path: str, name: "str | None" = None,
         "packet": packet,
         "diff": diff,
         "policy_verdict": policy_verdict,
+        "uef_profile": uef_profile,
         "supervisor_report": report,
     }

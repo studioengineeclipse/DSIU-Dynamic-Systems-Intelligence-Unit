@@ -32,6 +32,8 @@ def main(argv=None) -> int:
                         help="include .md/.yaml/.json/.toml etc. in the scan surface")
         lp.add_argument("--execute", action="store_true",
                         help="record a gated supervised no-op (no live change in v0.1)")
+        lp.add_argument("--uef", dest="uef_path",
+                        help="attach a DSIU-UEF compatibility profile for this workload")
         lp.add_argument("--json", dest="json_out",
                         help="write the full artifact bundle (JSON) here")
         lp.add_argument("--md", dest="md_out",
@@ -44,6 +46,7 @@ def main(argv=None) -> int:
             result = run_loop(
                 path=args.path, name=args.name, state_dir=args.state_dir,
                 include_docs=args.include_docs, execute=args.execute,
+                uef_path=args.uef_path,
             )
         except NotADirectoryError as exc:
             sys.stderr.write(f"error: not a directory: {exc}\n")

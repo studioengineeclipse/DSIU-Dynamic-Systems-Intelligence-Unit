@@ -17,6 +17,7 @@ Claude Code skill** plus a small standard-library engine.
 |---|---|
 | `dsiu/` | The skill bundle (source of truth): `SKILL.md`, doctrine in `references/`, `templates/`, and the `scripts/dsiu_analyze.py` engine. |
 | `dsiu_runtime/` | **DSIU-OIL** — the Operating Intelligence Layer that turns the discrete engine modes into one operating loop. See [`dsiu_runtime/README.md`](dsiu_runtime/README.md). |
+| `dsiu_uef/` | **DSIU-UEF** — the Universal Execution Fabric (compatibility intelligence: classify + route + sandbox-plan, no execution). See [`dsiu_uef/README.md`](dsiu_uef/README.md). |
 | `scripts/build_skill.py` | Validates the bundle and packages it into `dist/dsiu.skill`. |
 | `tests/` | Stdlib `unittest` smoke tests (no third-party deps). |
 | `examples/dsiu_on_dsiu_field.md` | DSIU's lens turned on its own v1 bundle — a worked Field Template and the rationale for this hardening pass. |
@@ -60,6 +61,33 @@ policy verdict, and a supervisor report — every artifact `DRAFT`, movement mea
 but improvement never claimed, execution dry-run only. This is the brain a future
 DSIU shell/OS gets built around; it is **not** itself a kernel, daemon, or OS. Full
 details and the phase roadmap: [`dsiu_runtime/README.md`](dsiu_runtime/README.md).
+
+## DSIU-UEF — the Universal Execution Fabric (v0.1)
+
+If OIL is the brain, **DSIU-UEF** (`dsiu_uef/`) is its **compatibility sense**: point
+it at a file/folder/repo/manifest/binary and it classifies *what it is*, routes it to
+the best execution lane (with fallbacks), flags permission risk, and recommends a
+sandbox — as a `DRAFT` compatibility profile. **It does not run anything** (no
+Wine/Proton/VM/container/install); it classifies, routes, and plans.
+
+```bash
+# Classify a workload (Markdown profile to stdout; or --json/--md)
+python -m dsiu_uef intake --path ./some_app
+
+# Attach a compatibility profile to an OIL supervisor pass
+python -m dsiu_runtime loop --path ./repo --name "Repo" --include-docs --uef ./some_app
+```
+
+Lanes: `native_dsiu`, `linux_native`, `flatpak_appimage`, `windows_wine`,
+`windows_proton`, `android_container`, `web_pwa`, `container_runtime`, `vm_runtime`,
+`remote_cloud`, `unsupported_unknown`. Details: [`dsiu_uef/README.md`](dsiu_uef/README.md).
+
+## Roadmap
+
+Skill ✅ → OIL ✅ → **UEF ✅** → Shell → Daemon → OS
+
+The compatibility intelligence layer exists; the OS body comes much later, only once
+each layer is stable.
 
 ## Usage
 

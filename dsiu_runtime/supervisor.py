@@ -42,7 +42,7 @@ def required_next_action(diff, policy_verdict) -> str:
 
 def build_supervisor_report(target: str, scorecard: dict, graph: dict,
                             packet: dict, diff, policy_verdict: dict,
-                            execute_record=None) -> dict:
+                            execute_record=None, uef_profile=None) -> dict:
     counts = scorecard.get("layer_counts") or {}
     shares = scorecard.get("layer_share") or {}
 
@@ -51,7 +51,7 @@ def build_supervisor_report(target: str, scorecard: dict, graph: dict,
         for layer in (*LAYERS, "unclassified")
     }
 
-    return {
+    report = {
         "kind": "supervisor_report",
         "oil_version": OIL_VERSION,
         "status": f"{DRAFT_STAMP} — DSIU-OIL supervisor report; review before acting (Law 0)",
@@ -67,6 +67,24 @@ def build_supervisor_report(target: str, scorecard: dict, graph: dict,
         "execution": {**EXECUTION_SEAM,
                       "record": execute_record or "dry-run (no execution requested)"},
     }
+
+    # Optional DSIU-UEF compatibility profile (attached when --uef was given).
+    if uef_profile:
+        report["uef_compatibility_profile"] = uef_profile
+        report["uef_summary"] = {
+            "workload": uef_profile.get("workload_name"),
+            "detected_type": uef_profile.get("detected_type"),
+            "primary_execution_lane": uef_profile.get("primary_execution_lane"),
+            "fallback_execution_lanes": uef_profile.get("fallback_execution_lanes"),
+            "permission_risk": uef_profile.get("permission_risk"),
+            "sandbox_recommendation": uef_profile.get("sandbox_recommendation"),
+        }
+        report["required_next_action"] += (
+            f" | UEF: recommend lane '{uef_profile.get('primary_execution_lane')}' "
+            "(candidate, requires validation; execution not performed)."
+        )
+
+    return report
 
 
 def render_report_md(report: dict) -> str:
@@ -87,6 +105,20 @@ def render_report_md(report: dict) -> str:
     ms = report["movement_score"]
     movement = (f"{ms} (direction unverified — movement ≠ improvement)"
                 if ms is not None else "_(no prior pass — no movement to measure)_")
+
+    uef_md = ""
+    if report.get("uef_summary"):
+        u = report["uef_summary"]
+        fb = ", ".join(u["fallback_execution_lanes"]) or "_(none)_"
+        uef_md = f"""
+## Compatibility (DSIU-UEF)
+- workload: `{u['workload']}`  ·  detected type: **{u['detected_type']}**
+- primary lane (candidate): **{u['primary_execution_lane']}**
+- fallback lanes: {fb}
+- permission risk: **{u['permission_risk']}**
+- sandbox: {u['sandbox_recommendation']}
+- _execution not performed — lanes require validation (Law 0)._
+"""
 
     return f"""# DSIU-OIL Supervisor Report — {report['target_analyzed']}
 
@@ -111,7 +143,7 @@ def render_report_md(report: dict) -> str:
 
 ## Movement
 {movement}
-
+{uef_md}
 ## Law 0 / policy verdict
 - law_0: **{pv['law_0']}**
 - draft_ok: **{pv['draft_ok']}**
