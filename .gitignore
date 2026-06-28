@@ -7,6 +7,9 @@ dsiu_state/
 # Shell session state
 dsiu_shell_state/
 
+# Daemon event state
+dsiu_daemon_state/
+
 # Python
 __pycache__/
 *.pyc

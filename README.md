@@ -19,6 +19,7 @@ Claude Code skill** plus a small standard-library engine.
 | `dsiu_runtime/` | **DSIU-OIL** — the Operating Intelligence Layer that turns the discrete engine modes into one operating loop. See [`dsiu_runtime/README.md`](dsiu_runtime/README.md). |
 | `dsiu_uef/` | **DSIU-UEF** — the Universal Execution Fabric (compatibility intelligence: classify + route + sandbox-plan, no execution). See [`dsiu_uef/README.md`](dsiu_uef/README.md). |
 | `dsiu_shell/` | **DSIU-Shell** — the user-facing command cockpit over OIL + UEF (inspect / profile / analyze / status / history / explain). See [`dsiu_shell/README.md`](dsiu_shell/README.md). |
+| `dsiu_daemon/` | **DSIU-Daemon** — the explicit foreground watcher/supervisor that observes folders over time and triggers analysis on change (no execution). See [`dsiu_daemon/README.md`](dsiu_daemon/README.md). |
 | `scripts/build_skill.py` | Validates the bundle and packages it into `dist/dsiu.skill`. |
 | `tests/` | Stdlib `unittest` smoke tests (no third-party deps). |
 | `examples/dsiu_on_dsiu_field.md` | DSIU's lens turned on its own v1 bundle — a worked Field Template and the rationale for this hardening pass. |
@@ -102,11 +103,31 @@ python -m dsiu_shell explain last  # human-readable breakdown
 Sessions are saved under `dsiu_shell_state/` (gitignored). Read commands are
 read-only and safe on empty state. Details: [`dsiu_shell/README.md`](dsiu_shell/README.md).
 
+## DSIU-Daemon — continuous observation (v0.1)
+
+**DSIU-Daemon** (`dsiu_daemon/`) watches a folder/project **over time**: it polls for
+changes and, only when something changed, triggers a Shell analysis (OIL + optional
+UEF), recording an event history and tracking movement. It is an explicit,
+**foreground**, observe-and-report watcher — no background service, no execution, no
+fixes.
+
+```bash
+python -m dsiu_daemon once ./repo --name "Repo" --include-docs   # one cycle
+python -m dsiu_daemon watch ./repo --include-docs --limit 1      # bounded foreground loop
+python -m dsiu_daemon status        # latest event
+python -m dsiu_daemon history       # recent events
+python -m dsiu_daemon explain last  # human-readable breakdown
+```
+
+Event types: `baseline` / `changed` / `no_change` (no fake movement) / `error`.
+Events are saved under `dsiu_daemon_state/` (gitignored). Details:
+[`dsiu_daemon/README.md`](dsiu_daemon/README.md).
+
 ## Roadmap
 
-Skill ✅ → OIL ✅ → UEF ✅ → **Shell ✅** → Daemon → OS
+Skill ✅ → OIL ✅ → UEF ✅ → Shell ✅ → **Daemon ✅** → OS
 
-Four organs now exist; the OS body comes much later, only once each layer is stable.
+Five organs now exist; the OS body comes much later, only once each layer is stable.
 
 ## Usage
 
