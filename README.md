@@ -18,6 +18,7 @@ Claude Code skill** plus a small standard-library engine.
 | `dsiu/` | The skill bundle (source of truth): `SKILL.md`, doctrine in `references/`, `templates/`, and the `scripts/dsiu_analyze.py` engine. |
 | `dsiu_runtime/` | **DSIU-OIL** — the Operating Intelligence Layer that turns the discrete engine modes into one operating loop. See [`dsiu_runtime/README.md`](dsiu_runtime/README.md). |
 | `dsiu_uef/` | **DSIU-UEF** — the Universal Execution Fabric (compatibility intelligence: classify + route + sandbox-plan, no execution). See [`dsiu_uef/README.md`](dsiu_uef/README.md). |
+| `dsiu_shell/` | **DSIU-Shell** — the user-facing command cockpit over OIL + UEF (inspect / profile / analyze / status / history / explain). See [`dsiu_shell/README.md`](dsiu_shell/README.md). |
 | `scripts/build_skill.py` | Validates the bundle and packages it into `dist/dsiu.skill`. |
 | `tests/` | Stdlib `unittest` smoke tests (no third-party deps). |
 | `examples/dsiu_on_dsiu_field.md` | DSIU's lens turned on its own v1 bundle — a worked Field Template and the rationale for this hardening pass. |
@@ -82,12 +83,30 @@ Lanes: `native_dsiu`, `linux_native`, `flatpak_appimage`, `windows_wine`,
 `windows_proton`, `android_container`, `web_pwa`, `container_runtime`, `vm_runtime`,
 `remote_cloud`, `unsupported_unknown`. Details: [`dsiu_uef/README.md`](dsiu_uef/README.md).
 
+## DSIU-Shell — the command cockpit (v0.1)
+
+**DSIU-Shell** (`dsiu_shell/`) is the single front door over OIL + UEF — so you stop
+thinking in modules. It routes commands into the organs, records each session, and
+shows status/history/explanations. It is **thin**: it does not analyze, classify, or
+execute anything itself.
+
+```bash
+python -m dsiu_shell inspect ./repo --name "Repo" --include-docs   # OIL loop
+python -m dsiu_shell profile ./app.exe                              # UEF profile
+python -m dsiu_shell analyze ./repo --with ./app.exe               # OIL + UEF
+python -m dsiu_shell status        # latest session summary
+python -m dsiu_shell history       # recent sessions
+python -m dsiu_shell explain last  # human-readable breakdown
+```
+
+Sessions are saved under `dsiu_shell_state/` (gitignored). Read commands are
+read-only and safe on empty state. Details: [`dsiu_shell/README.md`](dsiu_shell/README.md).
+
 ## Roadmap
 
-Skill ✅ → OIL ✅ → **UEF ✅** → Shell → Daemon → OS
+Skill ✅ → OIL ✅ → UEF ✅ → **Shell ✅** → Daemon → OS
 
-The compatibility intelligence layer exists; the OS body comes much later, only once
-each layer is stable.
+Four organs now exist; the OS body comes much later, only once each layer is stable.
 
 ## Usage
 

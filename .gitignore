@@ -4,6 +4,9 @@ dist/
 # OIL runtime state (feedback memory)
 dsiu_state/
 
+# Shell session state
+dsiu_shell_state/
+
 # Python
 __pycache__/
 *.pyc
