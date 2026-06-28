@@ -20,6 +20,7 @@ Claude Code skill** plus a small standard-library engine.
 | `dsiu_uef/` | **DSIU-UEF** — the Universal Execution Fabric (compatibility intelligence: classify + route + sandbox-plan, no execution). See [`dsiu_uef/README.md`](dsiu_uef/README.md). |
 | `dsiu_shell/` | **DSIU-Shell** — the user-facing command cockpit over OIL + UEF (inspect / profile / analyze / status / history / explain). See [`dsiu_shell/README.md`](dsiu_shell/README.md). |
 | `dsiu_daemon/` | **DSIU-Daemon** — the explicit foreground watcher/supervisor that observes folders over time and triggers analysis on change (no execution). See [`dsiu_daemon/README.md`](dsiu_daemon/README.md). |
+| `dsiu_os_seed/` | **DSIU-OS-Seed** — the operating-environment scaffold / control plane over the five organs (manifest / topology / readiness / status / roadmap; read-only). See [`dsiu_os_seed/README.md`](dsiu_os_seed/README.md). |
 | `scripts/build_skill.py` | Validates the bundle and packages it into `dist/dsiu.skill`. |
 | `tests/` | Stdlib `unittest` smoke tests (no third-party deps). |
 | `examples/dsiu_on_dsiu_field.md` | DSIU's lens turned on its own v1 bundle — a worked Field Template and the rationale for this hardening pass. |
@@ -123,11 +124,30 @@ Event types: `baseline` / `changed` / `no_change` (no fake movement) / `error`.
 Events are saved under `dsiu_daemon_state/` (gitignored). Details:
 [`dsiu_daemon/README.md`](dsiu_daemon/README.md).
 
+## DSIU-OS-Seed — the control plane (v0.1)
+
+**DSIU-OS-Seed** (`dsiu_os_seed/`) unifies the five organs into one documented
+operating environment — a read-only control plane. It is the bridge between DSIU as
+tools and DSIU as an operating environment. It does **not** boot, install, execute,
+or replace the host OS.
+
+```bash
+python -m dsiu_os_seed manifest     # organs, versions, capabilities, boundaries
+python -m dsiu_os_seed topology     # how the organs connect (+ future OS nodes)
+python -m dsiu_os_seed readiness    # DRAFT readiness report (detected, not validated)
+python -m dsiu_os_seed status       # operating-environment summary
+python -m dsiu_os_seed roadmap      # the phased OS path
+```
+
+Every command supports `--json`/`--md`. Details:
+[`dsiu_os_seed/README.md`](dsiu_os_seed/README.md).
+
 ## Roadmap
 
-Skill ✅ → OIL ✅ → UEF ✅ → Shell ✅ → **Daemon ✅** → OS
+Skill ✅ → OIL ✅ → UEF ✅ → Shell ✅ → Daemon ✅ → **OS-Seed ✅** → Desktop Layer → OS
 
-Five organs now exist; the OS body comes much later, only once each layer is stable.
+Six layers now exist (five organs + the control-plane scaffold); the OS body comes
+much later, only once each layer is stable.
 
 ## Usage
 
