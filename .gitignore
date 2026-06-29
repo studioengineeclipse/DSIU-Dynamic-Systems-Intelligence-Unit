@@ -10,6 +10,9 @@ dsiu_shell_state/
 # Daemon event state
 dsiu_daemon_state/
 
+# Desktop workspace/dashboard state
+dsiu_desktop_state/
+
 # Python
 __pycache__/
 *.pyc

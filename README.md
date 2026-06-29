@@ -21,6 +21,7 @@ Claude Code skill** plus a small standard-library engine.
 | `dsiu_shell/` | **DSIU-Shell** — the user-facing command cockpit over OIL + UEF (inspect / profile / analyze / status / history / explain). See [`dsiu_shell/README.md`](dsiu_shell/README.md). |
 | `dsiu_daemon/` | **DSIU-Daemon** — the explicit foreground watcher/supervisor that observes folders over time and triggers analysis on change (no execution). See [`dsiu_daemon/README.md`](dsiu_daemon/README.md). |
 | `dsiu_os_seed/` | **DSIU-OS-Seed** — the operating-environment scaffold / control plane over the five organs (manifest / topology / readiness / status / roadmap; read-only). See [`dsiu_os_seed/README.md`](dsiu_os_seed/README.md). |
+| `dsiu_desktop/` | **DSIU-Desktop Layer** — the first local workspace/control surface: a read-only dashboard over OS-Seed + Shell + Daemon (no GUI, no execution). See [`dsiu_desktop/README.md`](dsiu_desktop/README.md). |
 | `scripts/build_skill.py` | Validates the bundle and packages it into `dist/dsiu.skill`. |
 | `tests/` | Stdlib `unittest` smoke tests (no third-party deps). |
 | `examples/dsiu_on_dsiu_field.md` | DSIU's lens turned on its own v1 bundle — a worked Field Template and the rationale for this hardening pass. |
@@ -142,12 +143,31 @@ python -m dsiu_os_seed roadmap      # the phased OS path
 Every command supports `--json`/`--md`. Details:
 [`dsiu_os_seed/README.md`](dsiu_os_seed/README.md).
 
+## DSIU-Desktop Layer — the workspace surface (v0.1)
+
+**DSIU-Desktop Layer** (`dsiu_desktop/`) is the first local workspace/control surface:
+a read-only dashboard that organizes organs, state, sessions, daemon events,
+compatibility profiles, readiness, and the roadmap into one operating-environment
+view. It reads OS-Seed/Shell/Daemon state and writes only its own desktop state — no
+GUI, no execution, no watching.
+
+```bash
+python -m dsiu_desktop overview
+python -m dsiu_desktop workspace add ./repo --name "Repo"
+python -m dsiu_desktop dashboard --json desktop.json --md desktop.md
+python -m dsiu_desktop status
+python -m dsiu_desktop roadmap
+```
+
+Details: [`dsiu_desktop/README.md`](dsiu_desktop/README.md).
+
 ## Roadmap
 
-Skill ✅ → OIL ✅ → UEF ✅ → Shell ✅ → Daemon ✅ → **OS-Seed ✅** → Desktop Layer → OS
+Skill ✅ → OIL ✅ → UEF ✅ → Shell ✅ → Daemon ✅ → OS-Seed ✅ →
+**Desktop Layer ✅** → Linux Distribution → Native OS research
 
-Six layers now exist (five organs + the control-plane scaffold); the OS body comes
-much later, only once each layer is stable.
+Seven layers now exist (five organs + control-plane scaffold + workspace surface);
+the OS body comes much later, only once each layer is stable.
 
 ## Usage
 

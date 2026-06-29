@@ -75,7 +75,7 @@ def build_readiness() -> dict:
         "build_skill_present": build_present,
         "os_readiness_level": level,
         "next_required_action": (
-            "Scaffold detected. Next phase candidate: DSIU-Desktop Layer "
-            "(requires validation). No execution performed."
+            "Scaffold detected. Next phase candidate: DSIU Linux distribution "
+            "environment (requires validation). No execution performed."
         ),
     }

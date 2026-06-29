@@ -29,8 +29,8 @@ def build_manifest() -> dict:
         "status": f"{DRAFT_STAMP} — operating-environment map, not an OS (Law 0)",
         "date": date.today().isoformat(),
         "organs": organs,
-        "current_phase": "os_seed",
-        "next_phase": "desktop_layer",
+        "current_phase": "desktop_layer",
+        "next_phase": "linux_distribution",
         "future_os_role": ("a process-intelligence operating environment where every "
                            "workload is observed, mapped, classified, supervised, and "
                            "given a best-available execution lane — built much later, "
