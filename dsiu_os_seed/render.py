@@ -78,7 +78,7 @@ def render_status_md(manifest: dict, readiness: dict) -> str:
         f"**OS readiness level:** {readiness['os_readiness_level']}",
         f"**Law 0:** enforced — {DRAFT_STAMP}; scaffold only, no execution performed",
         f"**Next phase recommendation:** {manifest['next_phase']} "
-        "(DSIU-Desktop Layer, requires validation)",
+        "(requires validation)",
     ]) + "\n"
 
 

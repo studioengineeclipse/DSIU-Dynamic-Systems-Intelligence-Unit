@@ -26,7 +26,7 @@ ROADMAP = [
     ("shell", "DSIU-Shell command cockpit", "done"),
     ("daemon", "DSIU-Daemon continuous observation", "done"),
     ("os_seed", "DSIU-OS-Seed operating-environment scaffold", "done"),
-    ("desktop_layer", "DSIU-Desktop Layer (local user environment)", "current"),
-    ("linux_distribution", "DSIU Linux distribution", "future"),
+    ("desktop_layer", "DSIU-Desktop Layer (local user environment)", "done"),
+    ("linux_distribution", "DSIU Linux distribution", "current"),
     ("native_os", "DSIU native OS research", "future"),
 ]

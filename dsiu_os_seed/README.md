@@ -63,9 +63,9 @@ future OS role, requires validation, no execution performed.*
 
 ## Roadmap
 
-Skill ✅ → OIL ✅ → UEF ✅ → Shell ✅ → Daemon ✅ → **OS-Seed ✅ (you are here)** →
-Desktop Layer → Linux Distribution → Native OS research
+Skill ✅ → OIL ✅ → UEF ✅ → Shell ✅ → Daemon ✅ → **OS-Seed ✅** → Desktop Layer ✅ →
+**Linux Distribution 🟡 (scaffold)** → Native OS research
 
-OS-Seed gives the system a formal map of itself. The next phase candidate is the
-**DSIU-Desktop Layer** (the first local user environment around the organs) — built
-only after this scaffold is stable. The OS body comes much later.
+OS-Seed gives the system a formal map of itself. The Desktop Layer (now with a text
+UI) and the **DSIU-Distro** Linux-distribution scaffold (`dsiu_distro/`) build on it;
+a real bootable image and the OS body come much later, only once each layer is stable.

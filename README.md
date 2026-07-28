@@ -21,7 +21,8 @@ Claude Code skill** plus a small standard-library engine.
 | `dsiu_shell/` | **DSIU-Shell** — the user-facing command cockpit over OIL + UEF (inspect / profile / analyze / status / history / explain). See [`dsiu_shell/README.md`](dsiu_shell/README.md). |
 | `dsiu_daemon/` | **DSIU-Daemon** — the explicit foreground watcher/supervisor that observes folders over time and triggers analysis on change (no execution). See [`dsiu_daemon/README.md`](dsiu_daemon/README.md). |
 | `dsiu_os_seed/` | **DSIU-OS-Seed** — the operating-environment scaffold / control plane over the five organs (manifest / topology / readiness / status / roadmap; read-only). See [`dsiu_os_seed/README.md`](dsiu_os_seed/README.md). |
-| `dsiu_desktop/` | **DSIU-Desktop Layer** — the first local workspace/control surface: a read-only dashboard over OS-Seed + Shell + Daemon (no GUI, no execution). See [`dsiu_desktop/README.md`](dsiu_desktop/README.md). |
+| `dsiu_desktop/` | **DSIU-Desktop Layer** — the local workspace/control surface: a read-only dashboard over OS-Seed + Shell + Daemon, now with a text-UI (`tui`) snapshot surface (no GUI, no watch, no execution). See [`dsiu_desktop/README.md`](dsiu_desktop/README.md). |
+| `dsiu_distro/` | **DSIU-Distro** — the Linux-distribution scaffold: a read-only spec/manifest of the package set, boot topology, and image plan (no ISO, no build, no execution). See [`dsiu_distro/README.md`](dsiu_distro/README.md). |
 | `scripts/build_skill.py` | Validates the bundle and packages it into `dist/dsiu.skill`. |
 | `tests/` | Stdlib `unittest` smoke tests (no third-party deps). |
 | `examples/dsiu_on_dsiu_field.md` | DSIU's lens turned on its own v1 bundle — a worked Field Template and the rationale for this hardening pass. |
@@ -143,31 +144,57 @@ python -m dsiu_os_seed roadmap      # the phased OS path
 Every command supports `--json`/`--md`. Details:
 [`dsiu_os_seed/README.md`](dsiu_os_seed/README.md).
 
-## DSIU-Desktop Layer — the workspace surface (v0.1)
+## DSIU-Desktop Layer — the workspace surface (v0.2)
 
-**DSIU-Desktop Layer** (`dsiu_desktop/`) is the first local workspace/control surface:
-a read-only dashboard that organizes organs, state, sessions, daemon events,
+**DSIU-Desktop Layer** (`dsiu_desktop/`) is the local workspace/control surface: a
+read-only dashboard that organizes organs, state, sessions, daemon events,
 compatibility profiles, readiness, and the roadmap into one operating-environment
-view. It reads OS-Seed/Shell/Daemon state and writes only its own desktop state — no
+view. **v0.2** adds the first interface surface — a text-UI (`tui`) that renders the
+same read-only state as a bordered full-screen text frame (a *snapshot*, not a watch
+loop). It reads OS-Seed/Shell/Daemon state and writes only its own desktop state — no
 GUI, no execution, no watching.
 
 ```bash
 python -m dsiu_desktop overview
 python -m dsiu_desktop workspace add ./repo --name "Repo"
 python -m dsiu_desktop dashboard --json desktop.json --md desktop.md
+python -m dsiu_desktop tui                 # text-UI snapshot frame
+python -m dsiu_desktop tui --interactive   # user-driven refresh (no watching)
 python -m dsiu_desktop status
 python -m dsiu_desktop roadmap
 ```
 
 Details: [`dsiu_desktop/README.md`](dsiu_desktop/README.md).
 
+## DSIU-Distro — the Linux-distribution scaffold (v0.1)
+
+**DSIU-Distro** (`dsiu_distro/`) is the next roadmap phase: a read-only spec/manifest
+scaffold describing *what a DSIU Linux distribution would be* — the component/package
+set (the five organs as distribution components, reusing the OS-Seed registry), the
+boot topology (firmware → kernel → init → runtime → organs → Shell login → Desktop
+TUI), and the image build plan (stages + `iso`/`qcow2`/`raw` targets, all **planned**).
+It **builds nothing**: no image, no install, no boot, no execution.
+
+```bash
+python -m dsiu_distro manifest
+python -m dsiu_distro packages
+python -m dsiu_distro boot
+python -m dsiu_distro image
+python -m dsiu_distro status
+python -m dsiu_distro roadmap
+```
+
+Every command supports `--json`/`--md`. Every artifact is `DRAFT`; `no_build_performed`
+and `no_image_built` are always true. Details: [`dsiu_distro/README.md`](dsiu_distro/README.md).
+
 ## Roadmap
 
-Skill ✅ → OIL ✅ → UEF ✅ → Shell ✅ → Daemon ✅ → OS-Seed ✅ →
-**Desktop Layer ✅** → Linux Distribution → Native OS research
+Skill ✅ → OIL ✅ → UEF ✅ → Shell ✅ → Daemon ✅ → OS-Seed ✅ → Desktop Layer ✅ →
+**Linux Distribution 🟡 (scaffold)** → Native OS research
 
-Seven layers now exist (five organs + control-plane scaffold + workspace surface);
-the OS body comes much later, only once each layer is stable.
+Eight layers now exist (five organs + control-plane scaffold + workspace/text-UI
+surface + distribution scaffold); a real bootable image and the OS body come much
+later, only once each layer is stable.
 
 ## Usage
 

@@ -16,6 +16,7 @@ sys.path.insert(0, ROOT)
 from dsiu_desktop import DRAFT_STAMP  # noqa: E402
 from dsiu_desktop import __main__ as M  # noqa: E402
 from dsiu_desktop import render as R  # noqa: E402
+from dsiu_desktop import tui as TUI  # noqa: E402
 from dsiu_desktop import workspace as W  # noqa: E402
 from dsiu_desktop.dashboard import build_dashboard  # noqa: E402
 
@@ -113,6 +114,29 @@ class TestCLI(DesktopBase):
                      "--name", "DSIU self", "--state-dir", self.state])
         self.assertEqual(rc, 0)
         self.assertEqual(len(W.list_workspaces(self.state)), 1)
+
+
+class TestTUI(DesktopBase):
+    def test_frame_draft_layers_and_footer(self):
+        frame = TUI.render_tui_frame(build_dashboard(self.state))
+        self.assertIn(DRAFT_STAMP, frame)
+        for organ in SIX_LAYERS:
+            self.assertIn(organ, frame)
+        self.assertIn("no execution performed", frame.lower())
+
+    def test_frame_safe_on_empty_state_and_narrow_width(self):
+        d = build_dashboard(self.state,
+                            shell_state_dir=os.path.join(self.state, "no_shell"),
+                            daemon_state_dir=os.path.join(self.state, "no_daemon"))
+        # narrow width must not crash; every content row stays within the frame width
+        frame = TUI.render_tui_frame(d, width=50)
+        self.assertIn(DRAFT_STAMP, frame)
+        for line in frame.splitlines():
+            self.assertLessEqual(len(line), 50)
+
+    def test_cli_tui_snapshot(self):
+        rc = M.main(["tui", "--state-dir", self.state, "--width", "60"])
+        self.assertEqual(rc, 0)
 
 
 class TestSafety(DesktopBase):
